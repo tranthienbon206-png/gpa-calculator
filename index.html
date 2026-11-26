@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPA Calculator - Tính điểm trung bình</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+    <header class="bg-white border-b">
+        <div class="max-w-5xl mx-auto px-5 py-5 flex items-center gap-3">
+            <div class="w-11 h-11 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-graduation-cap text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold">GPA Calculator</h1>
+                <p class="text-sm text-gray-500">Công cụ tính điểm trung bình học kỳ</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-5 py-8">
+
+        <div class="mb-7">
+            <h2 class="text-2xl font-bold mb-2">Tính điểm trung bình học tập</h2>
+            <p class="text-gray-500">Quản lý điểm số và theo dõi kết quả học tập của bạn.</p>
+        </div>
+
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+
+            <div class="bg-white border rounded-2xl p-5">
+                <div class="flex justify-between items-center mb-3">
+                    <p class="text-sm text-gray-500">Điểm trung bình</p>
+                    <i class="fa-solid fa-chart-line text-blue-500"></i>
+                </div>
+                <h3 id="averageScore" class="text-3xl font-bold text-blue-600">0.00</h3>
+                <p class="text-xs text-gray-400 mt-1">Thang điểm 10</p>
+            </div>
+
+            <div class="bg-white border rounded-2xl p-5">
+                <div class="flex justify-between items-center mb-3">
+                    <p class="text-sm text-gray-500">Tổng tín chỉ</p>
+                    <i class="fa-solid fa-book text-green-500"></i>
+                </div>
+                <h3 id="totalCredits" class="text-3xl font-bold">0</h3>
+                <p class="text-xs text-gray-400 mt-1">Tín chỉ đã đăng ký</p>
+            </div>
+
+            <div class="bg-white border rounded-2xl p-5">
+                <div class="flex justify-between items-center mb-3">
+                    <p class="text-sm text-gray-500">Số môn học</p>
+                    <i class="fa-solid fa-list-check text-purple-500"></i>
+                </div>
+                <h3 id="totalSubjects" class="text-3xl font-bold">0</h3>
+                <p class="text-xs text-gray-400 mt-1">Môn học đã nhập</p>
+            </div>
+
+        </section>
+
+        <section class="bg-white border rounded-2xl p-6 mb-6">
+
+            <h3 class="font-bold text-lg mb-5" id="formTitle">
+                <i class="fa-solid fa-plus-circle text-blue-500 mr-2"></i>
+                Thêm môn học
+            </h3>
+
+            <form id="subjectForm" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">Tên môn học</label>
+                    <input id="subjectName" type="text" maxlength="100" placeholder="Ví dụ: Lập trình Web"
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">Số tín chỉ</label>
+                    <input id="credits" type="number" min="1" max="100" step="1" placeholder="Ví dụ: 3"
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">Điểm môn học (0 - 10)</label>
+                    <input id="score" type="number" min="0" max="10" step="0.01" placeholder="Ví dụ: 8.5"
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div class="sm:col-span-3 flex flex-wrap gap-2">
+                    <button id="submitButton" type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold">
+                        <i class="fa-solid fa-plus mr-2"></i>Thêm môn học
+                    </button>
+
+                    <button id="cancelButton" type="button" onclick="cancelEdit()"
+                        class="hidden border px-6 py-3 rounded-xl hover:bg-gray-50">
+                        Hủy chỉnh sửa
+                    </button>
+                </div>
+
+            </form>
+
+        </section>
+
+        <section class="bg-white border rounded-2xl p-6 mb-6">
+
+            <div class="flex justify-between items-center mb-5 gap-3">
+                <h3 class="font-bold text-lg">
+                    <i class="fa-solid fa-book-open text-blue-500 mr-2"></i>
+                    Danh sách môn học
+                </h3>
+                <span id="subjectCount" class="text-sm text-gray-500">0 môn học</span>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="bg-slate-50 text-gray-500">
+                        <tr>
+                            <th class="p-3 rounded-l-lg">STT</th>
+                            <th class="p-3">Tên môn học</th>
+                            <th class="p-3">Tín chỉ</th>
+                            <th class="p-3">Điểm</th>
+                            <th class="p-3">Kết quả</th>
+                            <th class="p-3 rounded-r-lg text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subjectList">
+                        <tr>
+                            <td colspan="6" class="text-center py-8 text-gray-400">
+                                Chưa có môn học nào.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+        <section class="bg-white border rounded-2xl p-6 mb-6">
+
+            <h3 class="font-bold text-lg mb-4">
+                <i class="fa-solid fa-chart-pie text-blue-500 mr-2"></i>
+                Kết quả học tập
+            </h3>
+
+            <div id="resultBox" class="bg-blue-50 rounded-xl p-5">
+                <p class="text-gray-500 text-sm">Hãy thêm môn học để xem kết quả.</p>
+            </div>
+
+        </section>
+
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p class="text-sm text-gray-400">Điểm trung bình được tính theo số tín chỉ.</p>
+
+            <button onclick="resetData()"
+                class="border border-red-200 text-red-500 hover:bg-red-50 px-5 py-3 rounded-xl font-semibold">
+                <i class="fa-solid fa-trash mr-2"></i>Xóa tất cả dữ liệu
+            </button>
+        </div>
+
+    </main>
+
+    <footer class="text-center py-7 text-sm text-gray-400">
+        © 2026 GPA Calculator - Công cụ tính điểm học tập
+    </footer>
+
+    <script>
+        let subjects = JSON.parse(localStorage.getItem("gpa_subjects")) || [];
+        let editingIndex = -1;
+
+        const form = document.getElementById("subjectForm");
+
+        function saveData() {
+            localStorage.setItem("gpa_subjects", JSON.stringify(subjects));
+        }
+
+        function formatNumber(number) {
+            return Number(number).toFixed(2);
+        }
+
+        function escapeHTML(value) {
+            return String(value).replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            })[char]);
+        }
+
+        function getAverage() {
+            const totalCredits = subjects.reduce((sum, item) => sum + item.credits, 0);
+
+            if (totalCredits === 0) return 0;
+
+            const totalScore = subjects.reduce(
+                (sum, item) => sum + item.score * item.credits, 0
+            );
+
+            return totalScore / totalCredits;
+        }
+
+        function getClassification(score) {
+            if (!subjects.length) return "Chưa có dữ liệu";
+            if (score >= 8.5) return "Xuất sắc";
+            if (score >= 7) return "Khá";
+            if (score >= 5.5) return "Trung bình";
+            if (score >= 4) return "Trung bình yếu";
+            return "Chưa đạt";
+        }
+
+        function getScoreStatus(score) {
+            if (score >= 4) {
+                return '<span class="text-green-600 bg-green-50 px-3 py-1 rounded-full text-xs font-medium">Đạt</span>';
+            }
+
+            return '<span class="text-red-500 bg-red-50 px-3 py-1 rounded-full text-xs font-medium">Chưa đạt</span>';
+        }
+
+        function renderSubjects() {
+            const list = document.getElementById("subjectList");
+
+            if (!subjects.length) {
+                list.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-8 text-gray-400">
+                            Chưa có môn học nào.
+                        </td>
+                    </tr>
+                `;
+            } else {
+                list.innerHTML = subjects.map((subject, index) => `
+                    <tr class="border-b last:border-0 hover:bg-slate-50">
+                        <td class="p-3">${index + 1}</td>
+                        <td class="p-3 font-medium">${escapeHTML(subject.name)}</td>
+                        <td class="p-3">${subject.credits}</td>
+                        <td class="p-3 font-bold text-blue-600">${formatNumber(subject.score)}</td>
+                        <td class="p-3">${getScoreStatus(subject.score)}</td>
+                        <td class="p-3">
+                            <div class="flex justify-center gap-3">
+                                <button onclick="editSubject(${index})"
+                                    class="text-blue-500 hover:text-blue-700" title="Chỉnh sửa">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button onclick="deleteSubject(${index})"
+                                    class="text-red-400 hover:text-red-600" title="Xóa">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join("");
+            }
+
+            document.getElementById("subjectCount").textContent = subjects.length + " môn học";
+        }
+
+        function renderResults() {
+            const average = getAverage();
+            const totalCredits = subjects.reduce((sum, item) => sum + item.credits, 0);
+
+            document.getElementById("averageScore").textContent = formatNumber(average);
+            document.getElementById("totalCredits").textContent = totalCredits;
+            document.getElementById("totalSubjects").textContent = subjects.length;
+
+            const resultBox = document.getElementById("resultBox");
+
+            if (!subjects.length) {
+                resultBox.innerHTML = '<p class="text-gray-500 text-sm">Hãy thêm môn học để xem kết quả.</p>';
+                return;
+            }
+
+            const classification = getClassification(average);
+            const passed = subjects.filter(item => item.score >= 4).length;
+            const failed = subjects.length - passed;
+
+            resultBox.innerHTML = `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-2">Điểm trung bình học kỳ</p>
+                        <p class="text-4xl font-bold text-blue-600">${formatNumber(average)}<span class="text-lg text-gray-400">/10</span></p>
+                    </div>
+
+                    <div>
+                        <p class="text-sm text-gray-500 mb-2">Xếp loại học tập</p>
+                        <p class="text-2xl font-bold text-blue-700">${classification}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mt-6">
+                    <div class="bg-white rounded-xl p-4">
+                        <p class="text-sm text-gray-500">Số môn đạt</p>
+                        <p class="text-2xl font-bold text-green-600">${passed}</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-4">
+                        <p class="text-sm text-gray-500">Số môn chưa đạt</p>
+                        <p class="text-2xl font-bold text-red-500">${failed}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAll() {
+            renderSubjects();
+            renderResults();
+        }
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const name = document.getElementById("subjectName").value.trim();
+            const credits = Number(document.getElementById("credits").value);
+            const scoreInput = document.getElementById("score").value.trim();
+            const score = Number(scoreInput);
+
+            if (!name) {
+                alert("Vui lòng nhập tên môn học!");
+                return;
+            }
+
+            if (!Number.isInteger(credits) || credits < 1 || credits > 100) {
+                alert("Số tín chỉ phải là số nguyên từ 1 đến 100!");
+                return;
+            }
+
+            if (scoreInput === "" || !Number.isFinite(score) || score < 0 || score > 10) {
+                alert("Điểm phải nằm trong khoảng từ 0 đến 10!");
+                return;
+            }
+
+            const subject = {
+                name: name,
+                credits: credits,
+                score: score
+            };
+
+            if (editingIndex === -1) {
+                subjects.push(subject);
+            } else {
+                subjects[editingIndex] = subject;
+            }
+
+            saveData();
+            renderAll();
+            cancelEdit();
+        });
+
+        function editSubject(index) {
+            const subject = subjects[index];
+
+            editingIndex = index;
+
+            document.getElementById("subjectName").value = subject.name;
+            document.getElementById("credits").value = subject.credits;
+            document.getElementById("score").value = subject.score;
+
+            document.getElementById("formTitle").innerHTML =
+                '<i class="fa-solid fa-pen text-blue-500 mr-2"></i>Chỉnh sửa môn học';
+
+            document.getElementById("submitButton").innerHTML =
+                '<i class="fa-solid fa-check mr-2"></i>Cập nhật môn học';
+
+            document.getElementById("cancelButton").classList.remove("hidden");
+
+            document.getElementById("subjectName").focus();
+            window.scrollTo({top: 0, behavior: "smooth"});
+        }
+
+        function cancelEdit() {
+            editingIndex = -1;
+            form.reset();
+
+            document.getElementById("formTitle").innerHTML =
+                '<i class="fa-solid fa-plus-circle text-blue-500 mr-2"></i>Thêm môn học';
+
+            document.getElementById("submitButton").innerHTML =
+                '<i class="fa-solid fa-plus mr-2"></i>Thêm môn học';
+
+            document.getElementById("cancelButton").classList.add("hidden");
+        }
+
+        function deleteSubject(index) {
+            if (!confirm("Bạn có chắc muốn xóa môn học này?")) return;
+
+            subjects.splice(index, 1);
+
+            if (editingIndex === index) {
+                cancelEdit();
+            } else if (editingIndex > index) {
+                editingIndex--;
+            }
+
+            saveData();
+            renderAll();
+        }
+
+        function resetData() {
+            if (!subjects.length) {
+                alert("Chưa có dữ liệu để xóa!");
+                return;
+            }
+
+            if (!confirm("Bạn có chắc muốn xóa tất cả môn học?")) return;
+
+            subjects = [];
+            cancelEdit();
+            saveData();
+            renderAll();
+        }
+
+        renderAll();
+    </script>
+
+</body>
+
+</html>
